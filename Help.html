@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CMH Panel - User Guide</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23ff0a3c' d='M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16Z'/%3E%3Cpath fill='%23ffb400' d='M8 15c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3 .875.75 1.75 1.25 1.75 1.25-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15Z'/%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#ff0a3c' } } }
+        }
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        /* ---------- Base / language-aware typography ---------- */
+        html { scroll-behavior: smooth; }
+        html[lang="en"] body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        html[lang="fa"] body { font-family: 'Vazirmatn', system-ui, sans-serif; }
+
+        .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
+        html[lang="en"] .font-display { font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: -0.01em; }
+        html[lang="fa"] .font-display { font-family: 'Vazirmatn', system-ui, sans-serif; }
+
+        /* Slightly larger base size + better line-height for Persian script legibility */
+        html[lang="fa"] body { font-size: 15.5px; }
+        html[lang="fa"] p, html[lang="fa"] li, html[lang="fa"] td { line-height: 1.85; }
+        html[lang="fa"] .field-name { font-family: 'Vazirmatn', 'JetBrains Mono', monospace; font-weight: 700; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 0, 60, 0.35); border-radius: 10px; }
+
+        body { background-color: #fafafa; transition: background-color .25s ease; }
+        .dark body { background-color: #050507; }
+
+        .neon-text { text-shadow: 0 0 10px rgba(255,0,60,0.5), 0 0 24px rgba(255,0,60,0.25); }
+        .dark .neon-text { color: #ff1a4b; text-shadow: 0 0 8px rgba(255,20,75,0.9), 0 0 22px rgba(255,20,75,0.55), 0 0 48px rgba(255,20,75,0.3); }
+
+        .ambient-glow { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .ambient-glow::before, .ambient-glow::after { content: ''; position: absolute; border-radius: 50%; filter: blur(100px); transition: left .25s ease, right .25s ease; }
+        html[dir="ltr"] .ambient-glow::before { width: 520px; height: 520px; top: -160px; left: -120px; background: radial-gradient(circle, rgba(255,0,60,0.18), transparent 70%); }
+        html[dir="ltr"] .ambient-glow::after { width: 560px; height: 560px; bottom: -200px; right: -140px; background: radial-gradient(circle, rgba(255,30,90,0.12), transparent 70%); }
+        html[dir="rtl"] .ambient-glow::before { width: 520px; height: 520px; top: -160px; right: -120px; background: radial-gradient(circle, rgba(255,0,60,0.18), transparent 70%); }
+        html[dir="rtl"] .ambient-glow::after { width: 560px; height: 560px; bottom: -200px; left: -140px; background: radial-gradient(circle, rgba(255,30,90,0.12), transparent 70%); }
+        .dark .ambient-glow::before { background: radial-gradient(circle, rgba(255,0,60,0.35), transparent 70%); }
+        .dark .ambient-glow::after { background: radial-gradient(circle, rgba(255,30,90,0.25), transparent 70%); }
+
+        .glass-panel { background: rgba(255,255,255,0.72); backdrop-filter: blur(20px); border: 1px solid rgba(15,15,20,0.06); }
+        .dark .glass-panel { background: rgba(15,12,14,0.6); border: 1px solid rgba(255,20,75,0.12); }
+        .glass-nav { background: rgba(255,255,255,0.65); backdrop-filter: blur(18px) saturate(160%); border-bottom: 1px solid rgba(15,15,20,0.06); }
+        .dark .glass-nav { background: rgba(7,5,7,0.75); border-bottom: 1px solid rgba(255,20,75,0.18); }
+        .glass-card { background: rgba(255,255,255,0.8); border: 1px solid rgba(15,15,20,0.06); }
+        .dark .glass-card { background: rgba(255,20,75,0.035); border: 1px solid rgba(255,20,75,0.1); backdrop-filter: blur(12px); }
+
+        .ghost-btn { transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease; }
+        .ghost-btn:hover { box-shadow: 0 0 14px -2px rgba(255,0,60,0.35); }
+        .dark .ghost-btn:hover { box-shadow: 0 0 16px -2px rgba(255,20,75,0.4); }
+
+        /* Nav link active/hover border flips with direction */
+        .nav-link { transition: all 0.2s ease; }
+        html[dir="ltr"] .nav-link { border-left: 2px solid transparent; }
+        html[dir="ltr"] .nav-link.active, html[dir="ltr"] .nav-link:hover { border-left-color: #ff0a3c; background: rgba(255,0,60,0.05); color: #ff0a3c; padding-left: 1rem; }
+        html[dir="rtl"] .nav-link { border-right: 2px solid transparent; }
+        html[dir="rtl"] .nav-link.active, html[dir="rtl"] .nav-link:hover { border-right-color: #ff0a3c; background: rgba(255,0,60,0.05); color: #ff0a3c; padding-right: 1rem; }
+        .dark .nav-link.active, .dark .nav-link:hover { color: #ff5577; background: rgba(255,20,75,0.1); }
+
+        /* Table styling */
+        .guide-table { width: 100%; border-collapse: collapse; }
+        html[dir="ltr"] .guide-table { text-align: left; }
+        html[dir="rtl"] .guide-table { text-align: right; }
+        .guide-table th { padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; border-bottom: 2px solid rgba(15,15,20,0.05); color: #64748b; }
+        .dark .guide-table th { border-bottom: 2px solid rgba(255,20,75,0.15); color: #94a3b8; }
+        .guide-table td { padding: 1rem; font-size: 0.875rem; border-bottom: 1px solid rgba(15,15,20,0.05); vertical-align: top; }
+        .dark .guide-table td { border-bottom: 1px solid rgba(255,20,75,0.05); }
+        .guide-table tr:last-child td { border-bottom: none; }
+        .field-name { font-weight: 700; color: #0f172a; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        .dark .field-name { color: #f8fafc; }
+        html[lang="fa"] .field-name { font-size: 0.85rem; }
+
+        /* Side accent boxes flip border side with direction */
+        html[dir="ltr"] .accent-box { border-left: 4px solid; border-right: none; }
+        html[dir="rtl"] .accent-box { border-right: 4px solid; border-left: none; }
+
+        /* Justify body copy nicely in Persian, keep natural ragged edge in English */
+        html[lang="fa"] .lang-justify { text-align: justify; }
+
+        /* Sidebar nested links: left border in LTR, right border in RTL */
+        html[dir="ltr"] .sub-links { padding-left: 1.5rem; margin-left: 1rem; border-left: 2px solid; }
+        html[dir="rtl"] .sub-links { padding-right: 1.5rem; margin-right: 1rem; border-right: 2px solid; }
+
+        /* Decorative corner icon mirrors with direction */
+        html[dir="rtl"] .corner-deco { transform: scaleX(-1); }
+
+        /* Hide elements not matching current language without layout jump issues */
+        [data-lang] { display: none; }
+        html[lang="en"] [data-lang="en"] { display: revert; }
+        html[lang="fa"] [data-lang="fa"] { display: revert; }
+        html[lang="en"] span[data-lang="en"],
+        html[lang="en"] a[data-lang="en"],
+        html[lang="en"] b[data-lang="en"],
+        html[lang="en"] code[data-lang="en"] { display: inline; }
+        html[lang="fa"] span[data-lang="fa"],
+        html[lang="fa"] a[data-lang="fa"],
+        html[lang="fa"] b[data-lang="fa"],
+        html[lang="fa"] code[data-lang="fa"] { display: inline; }
+
+        /* Language toggle pill */
+        .lang-toggle { position: relative; display: inline-flex; background: rgba(15,15,20,0.06); border-radius: 0.75rem; padding: 3px; }
+        .dark .lang-toggle { background: rgba(255,20,75,0.1); }
+        .lang-toggle button { position: relative; z-index: 1; padding: 0.4rem 0.7rem; font-size: 0.75rem; font-weight: 800; border-radius: 0.6rem; transition: color .2s ease; color: #64748b; }
+        .dark .lang-toggle button { color: #94a3b8; }
+        .lang-toggle button.active { color: white; }
+        .dark .lang-toggle button.active { color: white; }
+        .lang-toggle .pill { position: absolute; top: 3px; bottom: 3px; width: calc(50% - 3px); border-radius: 0.6rem; background: #ff0a3c; box-shadow: 0 0 14px -2px rgba(255,0,60,0.5); transition: transform .25s cubic-bezier(.65,0,.35,1); }
+        html[dir="ltr"] .lang-toggle .pill[data-pos="left"] { transform: translateX(0); }
+        html[dir="ltr"] .lang-toggle .pill[data-pos="right"] { transform: translateX(100%); }
+        html[dir="rtl"] .lang-toggle .pill[data-pos="left"] { transform: translateX(0); }
+        html[dir="rtl"] .lang-toggle .pill[data-pos="right"] { transform: translateX(-100%); }
+    </style>
+</head>
+<body class="font-sans text-slate-800 dark:text-slate-200 min-h-screen relative selection:bg-primary selection:text-white">
+    <div class="ambient-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav sticky top-0 w-full z-40 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-600/20 to-red-800/20 border border-red-600/30 dark:border-red-500/40 flex items-center justify-center shadow-lg dark:shadow-[0_0_18px_rgba(255,20,75,0.4)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 16 16"><path fill="#ff0a3c" d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16Z"/><path fill="#ffb400" d="M8 15c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3 .875.75 1.75 1.25 1.75 1.25-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15Z"/></svg>
+                </div>
+                <div class="flex flex-col leading-tight">
+                    <h1 class="font-display font-bold text-lg text-slate-900 dark:text-white neon-text tracking-tight">
+                        <span data-lang="en">CMH Panel</span>
+                        <span data-lang="fa">پنل CMH</span>
+                    </h1>
+                    <span class="text-[10px] font-mono-tech text-slate-500 dark:text-slate-400">
+                        <span data-lang="en">User Manual &amp; Dashboard Guide</span>
+                        <span data-lang="fa" class="font-sans">راهنمای جامع و مستندات داشبورد</span>
+                    </span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="https://t.me/CMH_Hub" target="_blank" class="hidden sm:inline-flex ghost-btn px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-red-500/15 text-slate-700 dark:text-slate-200">
+                    <span data-lang="en">💬 Support</span>
+                    <span data-lang="fa">💬 پشتیبانی</span>
+                </a>
+
+                <!-- Language Toggle -->
+                <div class="lang-toggle" role="group" aria-label="Language switch">
+                    <span class="pill" id="langPill" data-pos="left"></span>
+                    <button type="button" onclick="setLang('en')" id="btn-en" class="active">EN</button>
+                    <button type="button" onclick="setLang('fa')" id="btn-fa">FA</button>
+                </div>
+
+                <button onclick="toggleTheme()" class="ghost-btn flex w-10 h-10 rounded-xl border border-slate-200 dark:border-red-500/15 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 items-center justify-center text-lg" title="Toggle Theme">🌓</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col md:flex-row gap-8 relative z-10">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 shrink-0">
+            <div class="glass-card rounded-3xl p-5 sticky top-24">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 px-2">
+                    <span data-lang="en">Dashboard Tabs</span>
+                    <span data-lang="fa" class="normal-case">تب‌های داشبورد</span>
+                </h3>
+                <nav class="flex flex-col space-y-1">
+                    <a href="#intro" class="nav-link block py-2.5 px-3 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <span data-lang="en">🚀 Introduction</span>
+                        <span data-lang="fa">🚀 معرفی سیستم</span>
+                    </a>
+                    <a href="#tab-profiles" class="nav-link block py-2.5 px-3 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <span data-lang="en">🌍 Profiles Tab</span>
+                        <span data-lang="fa">🌍 تب پروفایل‌ها (Profiles)</span>
+                    </a>
+                    <a href="#tab-users" class="nav-link block py-2.5 px-3 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <span data-lang="en">👥 Users Tab</span>
+                        <span data-lang="fa">👥 تب کاربران (Users)</span>
+                    </a>
+                    <a href="#tab-settings" class="nav-link block py-2.5 px-3 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <span data-lang="en">⚙️ Settings Tab</span>
+                        <span data-lang="fa">⚙️ تب تنظیمات (Settings)</span>
+                    </a>
+                    <div class="sub-links flex flex-col space-y-1 mt-1 border-slate-100 dark:border-slate-800">
+                        <a href="#set-cluster" class="text-xs font-semibold text-slate-500 hover:text-primary dark:hover:text-primary py-1 transition-colors">
+                            <span data-lang="en">Cluster (Master/Edge)</span>
+                            <span data-lang="fa">کلاستر (Master/Edge)</span>
+                        </a>
+                        <a href="#set-general" class="text-xs font-semibold text-slate-500 hover:text-primary dark:hover:text-primary py-1 transition-colors">
+                            <span data-lang="en">General Configurations</span>
+                            <span data-lang="fa">تنظیمات عمومی (General)</span>
+                        </a>
+                        <a href="#set-fragment" class="text-xs font-semibold text-slate-500 hover:text-primary dark:hover:text-primary py-1 transition-colors">
+                            <span data-lang="en">Smart Fragment</span>
+                            <span data-lang="fa">فرگمنت هوشمند (Fragment)</span>
+                        </a>
+                        <a href="#set-telegram" class="text-xs font-semibold text-slate-500 hover:text-primary dark:hover:text-primary py-1 transition-colors">
+                            <span data-lang="en">Telegram Bot</span>
+                            <span data-lang="fa">ربات تلگرام</span>
+                        </a>
+                        <a href="#set-cf" class="text-xs font-semibold text-slate-500 hover:text-primary dark:hover:text-primary py-1 transition-colors">
+                            <span data-lang="en">Cloudflare Analytics</span>
+                            <span data-lang="fa">آمار کلاودفلر (Cloudflare)</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Documentation Content -->
+        <main class="flex-1 space-y-12 pb-20">
+
+            <!-- Intro Section -->
+            <section id="intro" class="scroll-mt-24">
+                <div class="glass-card rounded-3xl p-8 border-t-4 border-t-[#ff0a3c] relative overflow-hidden">
+                    <div class="corner-deco absolute top-0 right-0 p-6 opacity-10 text-primary pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                        <span data-lang="en">Welcome to CMH Panel Manual</span>
+                        <span data-lang="fa">خوش آمدید به راهنمای پنل CMH</span>
+                    </h2>
+                    <p class="lang-justify text-slate-600 dark:text-slate-300 leading-relaxed text-[15px] mb-6">
+                        <span data-lang="en">This guide explains exactly how to use every feature inside the <b>CMH Panel Dashboard</b>. The panel is divided into three main tabs: <b>Profiles</b> (for getting connection links), <b>Users</b> (for managing clients and traffic), and <b>Settings</b> (for system configuration).</span>
+                        <span data-lang="fa">این راهنما دقیقاً نحوه استفاده از تمامی امکانات داخل <b>داشبورد CMH</b> را توضیح می‌دهد. پنل به سه بخش اصلی تقسیم شده است: <b>تب Profiles</b> (برای دریافت لینک‌های اتصال کلاینت)، <b>تب Users</b> (برای مدیریت مشترکین و ترافیک آن‌ها)، و <b>تب Settings</b> (برای پیکربندی هسته سیستم).</span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Profiles Tab -->
+            <section id="tab-profiles" class="scroll-mt-24">
+                <h2 class="font-display text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
+                    <span class="text-primary mr-2 ml-2">🌍</span>
+                    <span data-lang="en">Profiles Tab</span>
+                    <span data-lang="fa">تب پروفایل‌ها (Profiles)</span>
+                </h2>
+                <div class="glass-card rounded-3xl p-6 space-y-4">
+                    <p class="lang-justify text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        <span data-lang="en">Once you create a user in the "Users" tab, they will appear here. This tab is used to distribute configurations to your clients. Each user gets a dedicated card with the following options:</span>
+                        <span data-lang="fa">هنگامی که یک کاربر جدید ایجاد می‌کنید، کارت مربوط به او در این تب ظاهر می‌شود. این بخش برای دریافت کانفیگ و ارائه آن به مشتریان استفاده می‌شود. هر کاربر گزینه‌های زیر را برای دریافت کانفیگ دارد:</span>
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-red-500/15 p-4 rounded-2xl">
+                            <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-sm flex items-center gap-2">
+                                <span data-lang="en">🌐 Open Sub Page</span>
+                                <span data-lang="fa">🌐 صفحه ساب اختصاصی (Sub Page)</span>
+                            </h4>
+                            <p class="lang-justify text-xs text-slate-500 dark:text-slate-400">
+                                <span data-lang="en">Opens a beautiful, client-facing webpage. The client can view their Total &amp; Daily usage, remaining days, and easily copy or scan their configs from there. This is the link you should send to your customers.</span>
+                                <span data-lang="fa">این دکمه یک صفحه وب بسیار زیبا و اختصاصی برای کاربر باز می‌کند. کلاینت می‌تواند میزان مصرف کل، مصرف روزانه و روزهای باقی‌مانده خود را ببیند و کانفیگ‌ها را مستقیماً از آنجا کپی یا اسکن کند. <b>(این لینکی است که باید به مشتری بدهید)</b></span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-red-500/15 p-4 rounded-2xl">
+                            <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-2 text-sm">
+                                <span data-lang="en">Clash Config</span>
+                                <span data-lang="fa">کانفیگ کلش (Clash)</span>
+                            </h4>
+                            <p class="lang-justify text-xs text-slate-500 dark:text-slate-400">
+                                <span data-lang="en">Generates a YAML file formatted specifically for Clash clients. It automatically includes <b>Fallback</b> and <b>Auto Best Ping (URL-Test)</b> proxy groups for all your IPs and Ports.</span>
+                                <span data-lang="fa">یک فایل استاندارد YAML مخصوص کلاینت‌های مبتنی بر کلش تولید می‌کند. این فایل به‌صورت خودکار دارای گروه‌های هوشمند <b>Fallback</b> (جایگزین خودکار آی‌پی قطع شده) و <b>Auto Best Ping</b> است.</span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-red-500/15 p-4 rounded-2xl">
+                            <h4 class="font-bold text-emerald-600 dark:text-emerald-400 mb-2 text-sm">
+                                <span data-lang="en">Normal Config</span>
+                                <span data-lang="fa">کانفیگ معمولی (Normal)</span>
+                            </h4>
+                            <p class="lang-justify text-xs text-slate-500 dark:text-slate-400">
+                                <span data-lang="en">Generates a standard Base64 encoded subscription link (vless:// and trojan:// links). Best for v2rayNG, v2rayN, and Shadowrocket.</span>
+                                <span data-lang="fa">لینک‌های استاندارد VLESS و Trojan را در قالب یک فرمت Base64 ارائه می‌دهد. این لینک بهترین گزینه برای برنامه‌هایی مانند v2rayNG، v2rayN و Shadowrocket است.</span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-red-500/15 p-4 rounded-2xl">
+                            <h4 class="font-bold text-amber-600 dark:text-amber-400 mb-2 text-sm">
+                                <span data-lang="en">JSON Config</span>
+                                <span data-lang="fa">کانفیگ جیسون (JSON)</span>
+                            </h4>
+                            <p class="lang-justify text-xs text-slate-500 dark:text-slate-400">
+                                <span data-lang="en">Generates a raw JSON format array of Outbounds. Useful for advanced clients like Sing-Box or custom routing setups.</span>
+                                <span data-lang="fa">یک خروجی کاملاً خام JSON شامل تمامی Outboundها ارائه می‌دهد. مناسب برای ایمپورت در کلاینت‌های بسیار حرفه‌ای مانند Sing-Box یا روتینگ‌های شخصی.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Tab -->
+            <section id="tab-users" class="scroll-mt-24">
+                <h2 class="font-display text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
+                    <span class="text-primary mr-2 ml-2">👥</span>
+                    <span data-lang="en">Users Tab</span>
+                    <span data-lang="fa">تب کاربران (Users)</span>
+                </h2>
+                <div class="glass-card rounded-3xl p-6 space-y-4">
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        <span data-lang="en">This tab is your control center for managing subscribers. You can add users, set precise traffic/time limits, and monitor their real-time usage.</span>
+                        <span data-lang="fa">این تب مرکز مدیریت مشترکین شماست. می‌توانید کاربران جدید بسازید، محدودیت‌های دقیق حجمی و زمانی اعمال کنید و مصرف لحظه‌ای آن‌ها را زیر نظر بگیرید.</span>
+                    </p>
+
+                    <div class="bg-primary/5 border border-primary/20 p-4 rounded-2xl mb-6">
+                        <h4 class="font-bold text-primary text-sm mb-1 flex items-center gap-2">
+                            <span data-lang="en">💡 How Traffic is Calculated</span>
+                            <span data-lang="fa">💡 ترافیک چگونه محاسبه می‌شود؟</span>
+                        </h4>
+                        <p class="lang-justify text-xs text-slate-700 dark:text-slate-300">
+                            <span data-lang="en">Since Cloudflare Workers do not provide byte-level tracking per socket, the panel counts <b>Requests</b>. The system uses a rough estimation where <b>1 GB ≈ 6,000 Requests</b>. When you set a limit in GB, the panel automatically converts and enforces it in Requests.</span>
+                            <span data-lang="fa">از آنجا که محیط Cloudflare Workers قابلیت شمارش دقیق بایت‌های عبوری در سطح سوکت را ندارد، سیستم <b>تعداد ریکوئست‌ها (Requests)</b> را می‌شمارد. پنل به صورت تقریبی در نظر می‌گیرد که <b>هر ۱ گیگابایت معادل حدود ۶,۰۰۰ ریکوئست</b> است. وقتی شما محدودیت را بر اساس گیگابایت (GB) تنظیم می‌کنید، سیستم خودکار آن را به ریکوئست تبدیل و اعمال می‌کند.</span>
+                        </p>
+                    </div>
+
+                    <h4 class="font-bold text-slate-900 dark:text-white text-md mb-2">
+                        <span data-lang="en">Creating / Editing a User</span>
+                        <span data-lang="fa">ساخت / ویرایش کاربر</span>
+                    </h4>
+                    <table class="guide-table bg-white dark:bg-slate-900/50 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">
+                                    <span data-lang="en">Field</span>
+                                    <span data-lang="fa">نام فیلد</span>
+                                </th>
+                                <th>
+                                    <span data-lang="en">Description</span>
+                                    <span data-lang="fa">توضیحات</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">Username</span></td>
+                                <td>
+                                    <span data-lang="en">The name of the user (e.g., John_Doe). This will be used in the config names.</span>
+                                    <span data-lang="fa">نام کاربری. این نام در اسم کانفیگ‌ها و ساب‌اسکریپشن نمایش داده می‌شود.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">Total Limit</span></td>
+                                <td>
+                                    <span data-lang="en">Maximum traffic allowed for the entire lifespan of the user. Choose GB or Reqs. Leave empty for Unlimited.</span>
+                                    <span data-lang="fa">محدودیت حجم کل (برای کل دوره کاربر). می‌توانید بر اساس GB یا Req تنظیم کنید. اگر خالی بماند، نامحدود خواهد بود.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">Daily Limit</span></td>
+                                <td>
+                                    <span data-lang="en">Maximum traffic allowed per day. Resets automatically at UTC 00:00. Leave empty for Unlimited.</span>
+                                    <span data-lang="fa">محدودیت حجم روزانه. این حجم هر روز (بر اساس ساعت UTC) صفر می‌شود. اگر خالی بماند، نامحدود است.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">Expiration (Days)</span></td>
+                                <td>
+                                    <span data-lang="en">The number of days the user has access. Countdown starts immediately. Leave empty for no expiry.</span>
+                                    <span data-lang="fa">تعداد روزهای اعتبار کاربر. به محض ثبت، شمارش معکوس آغاز می‌شود. اگر خالی بگذارید، بدون انقضا خواهد بود.</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="font-bold text-slate-900 dark:text-white text-md mb-2 mt-6">
+                        <span data-lang="en">User Actions</span>
+                        <span data-lang="fa">عملیات مدیریت کاربران (Actions)</span>
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 list-disc list-inside">
+                        <li>
+                            <span data-lang="en"><b>🔄 Reset:</b> Instantly clears the user's Total and Daily usage back to zero.</span>
+                            <span data-lang="fa"><b>🔄 Reset (ریست):</b> مصرف کل و مصرف روزانه کاربر را فوراً صفر می‌کند.</span>
+                        </li>
+                        <li>
+                            <span data-lang="en"><b>⏸️ Disable / ▶️ Enable:</b> Manually blocks or allows the user to connect. (Users are auto-disabled if they hit limits).</span>
+                            <span data-lang="fa"><b>⏸️ Disable / ▶️ Enable (تغییر وضعیت):</b> مسدودسازی دستی یا فعال‌سازی مجدد اتصال کاربر. (اگر کاربری به سقف مصرف برسد، سیستم به صورت خودکار او را Disable می‌کند).</span>
+                        </li>
+                        <li>
+                            <span data-lang="en"><b>✏️ Edit:</b> Change limits or add more days.</span>
+                            <span data-lang="fa"><b>✏️ Edit (ویرایش):</b> تغییر نام، حجم مجاز یا افزودن روزهای بیشتر.</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="tab-settings" class="scroll-mt-24">
+                <h2 class="font-display text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
+                    <span class="text-primary mr-2 ml-2">⚙️</span>
+                    <span data-lang="en">Settings Tab</span>
+                    <span data-lang="fa">تب تنظیمات (Settings)</span>
+                </h2>
+                <div class="space-y-6">
+                    <p class="lang-justify text-sm text-slate-600 dark:text-slate-300">
+                        <span data-lang="en">The Settings tab configures how the entire system behaves. It is divided into logical sections. After making changes, always click <b>"Save Configuration"</b> at the bottom.</span>
+                        <span data-lang="fa">تب تنظیمات برای پیکربندی رفتار کل سیستم استفاده می‌شود و به بخش‌های مجزا تقسیم شده است. <b>توجه:</b> پس از اعمال هر تغییری، حتماً دکمه <b>"Save Configuration" (ذخیره تنظیمات)</b> در پایین صفحه را بزنید.</span>
+                    </p>
+
+                    <!-- Cluster Setup -->
+                    <div id="set-cluster" class="glass-card rounded-3xl p-6 scroll-mt-24">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3">
+                            <span data-lang="en">1. Cluster Setup (Master/Edge)</span>
+                            <span data-lang="fa">۱. کلاستر و توزیع بار (Master/Edge)</span>
+                        </h3>
+                        <p class="lang-justify text-xs text-slate-600 dark:text-slate-400 mb-4">
+                            <span data-lang="en">Cloudflare limits free accounts to 100,000 requests per day per worker. To bypass this, you can deploy multiple proxy workers (Edges) that report back to a central Database worker (Master).</span>
+                            <span data-lang="fa">اکانت‌های رایگان کلودفلر روزانه محدود به ۱۰۰,۰۰۰ ریکوئست به ازای هر ورکر هستند. برای دور زدن این محدودیت، سیستم اجازه می‌دهد چندین ورکر فرعی (Edge) به یک دیتابیس مرکزی (Master) متصل شوند.</span>
+                        </p>
+
+                        <table class="guide-table bg-white dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                            <tbody>
+                                <tr>
+                                    <td class="w-1/3">
+                                        <span class="field-name">
+                                            <span data-lang="en">Master Node 👑</span>
+                                            <span data-lang="fa">نود اصلی (Master Node) 👑</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">Your primary worker with the D1 Database bound. It hosts the Dashboard and Subscription pages. If you select this, you can enter URLs of other workers in the <b>"Edge Nodes"</b> field below to balance load.</span>
+                                        <span data-lang="fa">این ورکر اصلی شماست که دیتابیس D1 به آن متصل است و داشبورد روی آن بالا می‌آید. اگر این حالت را انتخاب کنید، می‌توانید آدرس ورکرهای فرعی خود را در فیلد <b>"Edge Nodes"</b> وارد کنید تا ترافیک روی آن‌ها تقسیم شود.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Edge Node 📡</span>
+                                            <span data-lang="fa">نود لبه (Edge Node) 📡</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">A secondary worker (no D1 required). If selected, the UI hides users/profiles. You must enter the <b>Master API URL</b> and <b>Master Admin Password</b> so this Edge can fetch users and report its traffic back to the Master.</span>
+                                        <span data-lang="fa">ورکر ثانویه است که نیازی به دیتابیس ندارد و داشبوردش قفل می‌شود. در این حالت باید <b>آدرس ورکر Master</b> و <b>رمز عبور ادمین Master</b> را وارد کنید. این ورکر لیست کاربران را از نود اصلی می‌گیرد و ترافیک مصرفی را برای محاسبه به نود اصلی می‌فرستد.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- General Configurations -->
+                    <div id="set-general" class="glass-card rounded-3xl p-6 scroll-mt-24">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 flex justify-between items-center">
+                            <span>
+                                <span data-lang="en">2. General Configurations</span>
+                                <span data-lang="fa">۲. تنظیمات عمومی (General)</span>
+                            </span>
+                            <span class="bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 px-2 py-1 rounded text-[10px] font-bold">
+                                <span data-lang="en">Global Pause</span>
+                                <span data-lang="fa">توقف کل سیستم</span>
+                            </span>
+                        </h3>
+                        <p class="lang-justify text-xs text-slate-600 dark:text-slate-400 mb-4">
+                            <span data-lang="en">The "Global System Status" button at the top acts as a kill-switch to immediately drop all connections to this node.</span>
+                            <span data-lang="fa">دکمه "Global System Status" در بالای این بخش به عنوان یک Kill-Switch (کلید قطع اضطراری) عمل می‌کند و در صورت فعال‌سازی، تمام اتصالات ورکر فوراً قطع می‌شوند.</span>
+                        </p>
+
+                        <table class="guide-table bg-white dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                            <tbody>
+                                <tr>
+                                    <td class="w-1/4">
+                                        <span class="field-name">
+                                            <span data-lang="en">Protocol</span>
+                                            <span data-lang="fa">پروتکل (Protocol)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">Choose VLESS, Trojan, or Both. Subscriptions will generate accordingly.</span>
+                                        <span data-lang="fa">انتخاب بین VLESS، Trojan یا هردو. ساب‌اسکریپشن‌ها بر اساس این انتخاب ساخته می‌شوند.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Ports</span>
+                                            <span data-lang="fa">پورت‌ها (Ports)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">Select one or multiple ports (Hold Ctrl/Cmd). <br><b>HTTPS (TLS):</b> Enables WebSockets over TLS.<br><b>HTTP (Non-TLS):</b> Enables raw WebSockets (useful behind CDNs).</span>
+                                        <span data-lang="fa">می‌توانید چند پورت را با نگه‌داشتن کلید Ctrl انتخاب کنید. <br><b>گروه TLS (مثل 443):</b> تنظیمات امنیتی TLS را اعمال می‌کند.<br><b>گروه Non-TLS (مثل 80):</b> مناسب برای استفاده در پشت CDNها بدون TLS.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="field-name">Clean IPs</span></td>
+                                    <td>
+                                        <span data-lang="en">Enter proxy IPs, CDN IPs, or domains (one per line or comma-separated). The panel will generate a separate config for <i>each</i> IP combined with <i>each</i> Port.</span>
+                                        <span data-lang="fa">آی‌پی‌های تمیز، آی‌پی سرورهای CDN یا دامنه‌های خود را وارد کنید (هر خط یک آی‌پی یا با کاما). پنل به ازای <i>هر آی‌پی</i> ضربدر <i>هر پورت</i>، یک کانفیگ تولید می‌کند.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Name Strategy</span>
+                                            <span data-lang="fa">الگوی نام‌گذاری (Name Strategy)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">
+                                            Customize how configs are named in the client app. Available variables:<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary">{PROTOCOL}</code> : VLESS or Trojan<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary">{USER}</code> : Username<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary">{PORT}</code> : Port Number<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary">{IP}</code> : The Clean IP<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary">{PREFIX}</code> : Text from Name Prefix field.
+                                        </span>
+                                        <span data-lang="fa">
+                                            نحوه نمایش نام کانفیگ‌ها در اپلیکیشن کاربر را تغییر می‌دهد. متغیرهای مجاز:<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary text-[11px] font-mono-tech">{PROTOCOL}</code> : نام پروتکل<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary text-[11px] font-mono-tech">{USER}</code> : نام کاربری<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary text-[11px] font-mono-tech">{PORT}</code> : شماره پورت<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary text-[11px] font-mono-tech">{IP}</code> : آی‌پی تمیز<br>
+                                            <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-primary text-[11px] font-mono-tech">{PREFIX}</code> : متن دلخواه وارد شده در فیلد Name Prefix
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="field-name">Resolver IP / DoH</span></td>
+                                    <td>
+                                        <span data-lang="en">Used if the worker needs to resolve DNS queries internally (e.g., 1.1.1.1).</span>
+                                        <span data-lang="fa">اگر کاربر بخواهد به جای آدرس عددی، یک دامنه را پراکسی کند، ورکر برای پیدا کردن IP هدف از این سرویس (مثل 1.1.1.1) استفاده می‌کند.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Proxy ip</span>
+                                            <span data-lang="fa">آپروکسی آیپی (Proxy ip)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">By entering a custom server address ALL traffic will be forced through it. If left blank, it uses Cloudflare's dynamic IPs.</span>
+                                        <span data-lang="fa">در صورت وارد کردن یک آدرس سرور سفارشی، تمام ترافیک به‌اجبار از طریق آن هدایت می‌شود. در غیر این صورت ، از آی‌پی‌های پویای کلودفلر استفاده خواهد شد.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Camouflage Host</span>
+                                            <span data-lang="fa">هاست استتار (Camouflage Host)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">If someone visits your worker URL directly without the correct path, they will be redirected/proxied to this harmless website (e.g., hcaptcha.com).</span>
+                                        <span data-lang="fa">اگر ربات‌های فیلترینگ یا افراد ناشناس، لینک ورکر شما را بدون مسیر (Path) صحیح باز کنند، به این سایت بی‌خطر (مثلاً hcaptcha.com) ریدایرکت می‌شوند تا ماهیت ورکر مخفی بماند.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Smart Fragment -->
+                    <div id="set-fragment" class="glass-card rounded-3xl p-6 scroll-mt-24">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3">
+                            <span data-lang="en">3. Smart Fragment (DPI Bypass)</span>
+                            <span data-lang="fa">۳. فرگمنت هوشمند (بایپس فیلترینگ / DPI)</span>
+                        </h3>
+                        <p class="lang-justify text-xs text-slate-600 dark:text-slate-400 mb-4">
+                            <span data-lang="en">Fragmentation splits the initial TLS handshake into smaller pieces. This prevents Deep Packet Inspection (DPI) firewalls from reading the Server Name Indication (SNI) and blocking the connection. If enabled, this is automatically applied to Clash and JSON generated configs for TLS ports.</span>
+                            <span data-lang="fa">مکانیزم فرگمنت، بسته اولیه TLS (موسوم به Client Hello) را به قطعات کوچکتر تقسیم می‌کند تا فایروال‌های سیستم فیلترینگ (DPI) نتوانند نام دامنه (SNI) را بخوانند و اتصال را مسدود کنند. این تنظیمات مستقیماً درون کانفیگ‌های Clash و JSON خروجی قرار می‌گیرند.</span>
+                        </p>
+
+                        <table class="guide-table bg-white dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                            <tbody>
+                                <tr>
+                                    <td class="w-1/4"><span class="field-name">Enable Fragment</span></td>
+                                    <td>
+                                        <span data-lang="en">Toggle switch. Turns the feature on or off globally for generated subscriptions.</span>
+                                        <span data-lang="fa">کلید روشن/خاموش. اعمال یا عدم اعمال این ویژگی در ساب‌اسکریپشن‌ها را کنترل می‌کند.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Size (Length)</span>
+                                            <span data-lang="fa">طول (Size)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">e.g., <code class="text-primary font-mono-tech">10-100</code>. The random number of bytes to send in each packet slice.</span>
+                                        <span data-lang="fa">مثال: <code class="text-primary font-mono-tech">10-100</code>. تعداد بایت‌های رندوم در هر تکه از بسته ارسال شده.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Interval</span>
+                                            <span data-lang="fa">فاصله زمانی (Interval)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">e.g., <code class="text-primary font-mono-tech">1-10</code>. The delay in milliseconds between sending each fragment.</span>
+                                        <span data-lang="fa">مثال: <code class="text-primary font-mono-tech">1-10</code>. وقفه زمانی (به میلی‌ثانیه) بین ارسال هر قطعه.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">
+                                            <span data-lang="en">Step (Packets)</span>
+                                            <span data-lang="fa">بسته هدف (Step)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">Usually set to <code class="text-primary font-mono-tech">tlshello</code>. This tells the client to only fragment the initial handshake, keeping the rest of the stream fast and unfragmented.</span>
+                                        <span data-lang="fa">معمولاً روی <code class="text-primary font-mono-tech">tlshello</code> تنظیم می‌شود. به کلاینت می‌گوید که فقط مرحله دست‌دهی اولیه (Handshake) را تکه‌تکه کند تا سرعت کلی اتصال افت نکند.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Telegram Bot -->
+                    <div id="set-telegram" class="glass-card rounded-3xl p-6 scroll-mt-24">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3">
+                            <span data-lang="en">4. Telegram Bot Integration</span>
+                            <span data-lang="fa">۴. اتصال ربات تلگرام</span>
+                        </h3>
+                        <p class="lang-justify text-xs text-slate-600 dark:text-slate-400 mb-4">
+                            <span data-lang="en">You can manage users, check usage, and pause the system entirely via a Telegram Bot without needing to log into this Dashboard.</span>
+                            <span data-lang="fa">با اتصال ربات، می‌توانید بدون نیاز به ورود به داشبورد وب، کارهای پنل مانند ساخت کاربر، دریافت وضعیت سیستم، مسدودسازی کاربران و مشاهده حجم مصرفی را مستقیماً از تلگرام انجام دهید.</span>
+                        </p>
+
+                        <div class="space-y-3 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-white/5 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                            <p>
+                                <span data-lang="en"><b>Step 1:</b> Create a bot using <a href="https://t.me/BotFather" class="text-primary hover:underline">@BotFather</a> in Telegram and copy the HTTP API Token. Paste it in <b>"Bot Token"</b>.</span>
+                                <span data-lang="fa"><b>مرحله ۱:</b> در تلگرام به ربات <a href="https://t.me/BotFather" class="text-primary hover:underline" dir="ltr">@BotFather</a> رفته و یک ربات جدید بسازید. توکن HTTP API داده شده را کپی کرده و در فیلد <b>"Bot Token"</b> وارد کنید.</span>
+                            </p>
+                            <p>
+                                <span data-lang="en"><b>Step 2:</b> Find your personal Telegram Account ID using a bot like <a href="https://t.me/userinfobot" class="text-primary hover:underline">@userinfobot</a>. Paste it in <b>"Admin ID"</b> (so only YOU can control it).</span>
+                                <span data-lang="fa"><b>مرحله ۲:</b> آیدی عددی اکانت تلگرام شخصی خودتان را (از طریق ربات‌هایی مثل <a href="https://t.me/userinfobot" class="text-primary hover:underline" dir="ltr">@userinfobot</a>) پیدا کنید و در فیلد <b>"Admin ID"</b> قرار دهید (تا هیچ‌کس جز شما نتواند به ربات دستور بدهد).</span>
+                            </p>
+                            <p>
+                                <span data-lang="en"><b>Step 3:</b> Click Save Configuration. Then go to your bot and send <code class="font-bold text-primary">/start</code>.</span>
+                                <span data-lang="fa"><b>مرحله ۳:</b> در پایین صفحه داشبورد روی "ذخیره تنظیمات" کلیک کنید. سپس به ربات خود در تلگرام رفته و <code class="font-bold text-primary" dir="ltr">/start</code> را ارسال کنید.</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Cloudflare Analytics -->
+                    <div id="set-cf" class="glass-card rounded-3xl p-6 scroll-mt-24">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3">
+                            <span data-lang="en">5. Cloudflare Analytics (Multi-Account)</span>
+                            <span data-lang="fa">۵. آمار کلاودفلر (پشتیبانی از چند اکانت)</span>
+                        </h3>
+                        <p class="lang-justify text-xs text-slate-600 dark:text-slate-400 mb-4">
+                            <span data-lang="en">Since Cloudflare Workers are limited to 100,000 requests per day, it is crucial to monitor this. You can link multiple Cloudflare accounts (e.g., your Master account and 3 Edge accounts) here.</span>
+                            <span data-lang="fa">با توجه به محدودیت روزانه ۱۰۰ هزار ریکوئست، بررسی میزان درخواست‌های مصرف شده بسیار مهم است. در این بخش می‌توانید چندین اکانت کلاودفلر (مثلاً اکانت Master و سه اکانت Edge) را همزمان به سیستم متصل کنید.</span>
+                        </p>
+
+                        <div class="accent-box bg-indigo-50 dark:bg-indigo-900/20 border-indigo-500 p-4 rounded-xl mb-4">
+                            <p class="lang-justify text-xs text-indigo-800 dark:text-indigo-300">
+                                <span data-lang="en">Once you add accounts here, you can click the <b>"CF Usage"</b> button in your <b>Telegram Bot</b>. The bot will instantly fetch and display a beautiful progress bar showing the daily 100k limit usage for <i>all</i> linked accounts at once!</span>
+                                <span data-lang="fa">پس از افزودن اکانت‌ها در اینجا، با زدن دکمه <b>"CF Usage"</b> در <b>ربات تلگرام</b>، ربات در همان لحظه میزان ریکوئست مصرف شده نسبت به سقف ۱۰۰ هزارتایی را برای <i>تک‌تک اکانت‌های متصل شده</i> به صورت نمودار میله‌ای به شما نشان می‌دهد!</span>
+                            </p>
+                        </div>
+
+                        <table class="guide-table bg-white dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                            <tbody>
+                                <tr>
+                                    <td class="w-1/4">
+                                        <span class="field-name">
+                                            <span data-lang="en">Node/Account Name</span>
+                                            <span data-lang="fa">نام اکانت/نود</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="en">A nickname you give it (e.g., "Main Account" or "Edge 1").</span>
+                                        <span data-lang="fa">یک نام دلخواه برای تشخیص راحت‌تر (مثلا "اکانت اصلی" یا "نود دوم").</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="field-name">Account ID</span></td>
+                                    <td>
+                                        <span data-lang="en">Found in your Cloudflare Dashboard URL: <code class="text-[10px] break-all">dash.cloudflare.com/<b>[THIS_LONG_STRING]</b>/workers</code></span>
+                                        <span data-lang="fa">این شناسه را می‌توانید در آدرس URL داشبورد کلاودفلر خود پیدا کنید: <code class="text-[10px] break-all" dir="ltr">dash.cloudflare.com/<b>[THIS_LONG_STRING]</b>/workers</code></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="field-name">API Token</span></td>
+                                    <td>
+                                        <span data-lang="en">Go to CF Profile -&gt; API Tokens -&gt; Create Token. Use "Read all resources" template, or create custom with Account/Worker Metrics Read permission.</span>
+                                        <span data-lang="fa">در کلاودفلر به بخش My Profile -&gt; API Tokens بروید. می‌توانید از قالب "Read all resources" استفاده کنید یا یک توکن اختصاصی بسازید که دسترسی خواندن (Read) برای Account/Worker Metrics داشته باشد.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-slate-200 dark:border-red-500/15 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-rose-600/20 to-red-800/20 border border-red-600/30 dark:border-red-500/40 mb-3 grayscale opacity-60">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 16 16"><path fill="#ff0a3c" d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16Z"/><path fill="#ffb400" d="M8 15c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3 .875.75 1.75 1.25 1.75 1.25-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15Z"/></svg>
+            </div>
+            <p class="text-sm font-bold text-slate-500 dark:text-slate-400">
+                <span data-lang="en">Developed by <a href="https://t.me/CMH_Hub" class="text-primary hover:underline">CMH Hub</a></span>
+                <span data-lang="fa">توسعه داده شده توسط <a href="https://t.me/CMH_Hub" class="text-primary hover:underline" dir="ltr">CMH Hub</a></span>
+            </p>
+            <p class="text-xs font-mono-tech mt-2 opacity-50" dir="ltr">Version 2.1.0 • User Guide</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+
+        function setLang(lang) {
+            const html = document.documentElement;
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+            localStorage.cmhLang = lang;
+
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-fa').classList.toggle('active', lang === 'fa');
+            document.getElementById('langPill').setAttribute('data-pos', lang === 'en' ? 'left' : 'right');
+
+            document.title = lang === 'fa' ? 'CMH Panel - راهنمای سیستم' : 'CMH Panel - User Guide';
+        }
+
+        // Restore saved language preference (default English)
+        (function initLang() {
+            const saved = localStorage.cmhLang === 'fa' ? 'fa' : 'en';
+            setLang(saved);
+        })();
+
+        // Simple script to highlight active section in sidebar based on scroll
+        const sections = document.querySelectorAll("section");
+        const navLinks = document.querySelectorAll(".nav-link");
+        const subLinks = document.querySelectorAll(".sub-links a");
+
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            // Handle main tabs
+            navLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href").includes(current)) {
+                    link.classList.add("active");
+                }
+            });
+
+            // Handle settings sub-sections
+            const settingsSections = ["set-cluster", "set-general", "set-fragment", "set-telegram", "set-cf"];
+            let subCurrent = "";
+            settingsSections.forEach((id) => {
+                const el = document.getElementById(id);
+                if (el && scrollY >= el.offsetTop - 150) {
+                    subCurrent = id;
+                }
+            });
+
+            subLinks.forEach((link) => {
+                link.classList.remove("text-primary", "font-bold");
+                if (link.getAttribute("href").includes(subCurrent)) {
+                    link.classList.add("text-primary", "font-bold");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
