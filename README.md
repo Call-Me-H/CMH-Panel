@@ -43,7 +43,7 @@ With the release of **v2.1.0**, CMH Panel has evolved into a full **Cluster Mana
 > **💡 Need help understanding the settings?**
 > A complete offline guide is included in this repository.
 >
-> Simply open the **`Help.html`** file in your browser to read a detailed explanation of every section of the panel, including Edge Nodes setup, Fragment configurations, User Limits, and Telegram Bot features.
+> Simply open the **[Help](https://call-me-h.github.io/CMH-Panel/Help.html)** to read a detailed explanation of every section of the panel, including Edge Nodes setup, Fragment configurations, User Limits, and Telegram Bot features.
 
 ---
 
